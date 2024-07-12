@@ -7,8 +7,6 @@ import CountrySearch from './components/CountrySearch'
 const App = () => {
   const [countryNames, setCountryNames] = useState(null)
   const [country, setCountry] = useState(null)
-  const [countryName, setCountryName] = useState(null)
-  const [showCountry, setShowCountry] = useState(false)
   const [search, setSearch] = useState('')
 
   useEffect(()=>{
@@ -25,7 +23,7 @@ const App = () => {
           }
           else {
             setCountryNames(filteredCountriesNames)
-            setShowCountry(false)
+            setCountry(null)
           }
         })
     }
@@ -54,8 +52,6 @@ const App = () => {
               icon: weatherData.weather[0].icon       
             }
             setCountry(country)
-            setCountryName(countryName)
-            setShowCountry(true)
             setCountryNames([countryName])
           })
           
@@ -66,9 +62,7 @@ const App = () => {
   const handleSearch = (event) =>{
     setSearch(event.target.value)
     if (event.target.value==="") {
-      setShowCountry(false)
       setCountry(null)
-      setCountryName(null)
       setCountryNames(null)
     }
   }
@@ -77,12 +71,8 @@ const App = () => {
     getCountryData(countryName)
   }
 
-  if (!countryNames ) { 
-    // Countries is empty --> render only search
-    return <CountrySearch search={search} handleSearch={handleSearch}/ >
-  
-  } else if (countryNames.length>10 && search != '' && !showCountry){
-    //over 10 countries --> need more specification. Also search not empty
+  if (countryNames && countryNames.length>10){ 
+    //over 10 countries --> need more specification
     return (
       <div>
         <CountrySearch search={search} handleSearch={handleSearch}/ >
@@ -90,8 +80,8 @@ const App = () => {
       </div>
     )
 
-  } else if (countryNames.length<11 && countryNames.length>1 && search !='' && !showCountry){
-    //less than 10 countries --> show all names. Also search not empty
+  } else if (countryNames && countryNames.length<11 && countryNames.length>1){
+    //less than 10 countries --> show all names
     return (
       <div>
         <CountrySearch search={search} handleSearch={handleSearch}/ >
@@ -99,8 +89,8 @@ const App = () => {
       </div>
     )
 
-  } else if (country && countryName===country.name && search!='' && showCountry) {
-    // there's only one country, show its info. Also search not empty
+  } else if (country){ 
+    // there's only one country, show its info
     return (
       <div>
         <CountrySearch search={search} handleSearch={handleSearch}/ >
@@ -117,7 +107,7 @@ const App = () => {
       </div>
     )
   } else {
-    // all other cases e.g. when countries list have items already but searching for wrong name
+    // all other cases 
     return <CountrySearch search={search} handleSearch={handleSearch}/ > 
   }
 }
