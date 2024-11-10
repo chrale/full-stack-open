@@ -1,3 +1,5 @@
+const Blog = require('../models/blog')
+
 const emptyList = []
 const listWithOneBlog = [
   {
@@ -101,6 +103,13 @@ const oneBlogMissingURLTitle = {
   __v: 0
 }
 
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
+}
+
 module.exports = {
-  emptyList, biggerList, listWithOneBlog, oneBlog, oneBlogMissingLikes, oneBlogMissingTitle, oneBlogMissingURL, oneBlogMissingURLTitle
+  emptyList, biggerList, listWithOneBlog, oneBlog, oneBlogMissingLikes,
+  oneBlogMissingTitle, oneBlogMissingURL, oneBlogMissingURLTitle,
+  blogsInDb
 }

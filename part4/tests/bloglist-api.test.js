@@ -3,15 +3,16 @@ const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const test_helper = require('./test_helper')
+const helper = require('./test_helper')
 const Blog = require('../models/blog')
 
-// wrapping th express app into superagent object --> makes request to backend
+// wrapping the express app into superagent object --> makes request to backend
 const api = supertest(app)
 
+// before each test cleaning db and adding the bigger list to it
 beforeEach(async () => {
   await Blog.deleteMany({})
-  const blogObjects = test_helper.biggerList.map(blog => new Blog(blog))
+  const blogObjects = helper.biggerList.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
 })
@@ -24,7 +25,7 @@ test('all blogs are returned as json', async () => {
 
   const response = await api.get('/api/blogs')
   const blogLength = response.body.length
-  assert.strictEqual(blogLength, test_helper.biggerList.length)
+  assert.strictEqual(blogLength, helper.biggerList.length)
 })
 
 test('unique identifier of blog post is id', async () => {
@@ -36,65 +37,66 @@ test('unique identifier of blog post is id', async () => {
 
 describe('post methods', () => {
   test('blog post can be added to the database', async () => {
-    await api
+    const savedBlog = await api
       .post('/api/blogs')
-      .send(test_helper.oneBlog)
+      .send(helper.oneBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
-    const blogLength = response.body.length
+    const blogs = await helper.blogsInDb()
+    const blogLength = blogs.length
 
-    assert.strictEqual(blogLength, test_helper.biggerList.length+1)
+    assert.strictEqual(savedBlog.body.title, helper.oneBlog.title)
+    assert.strictEqual(savedBlog.body.author, helper.oneBlog.author)
+    assert.strictEqual(savedBlog.body.likes, helper.oneBlog.likes)
+    assert.strictEqual(savedBlog.body.url, helper.oneBlog.url)
+    assert.strictEqual(blogLength, helper.biggerList.length+1)
   })
 
   test('likes property missing from request, defaulting likes to 0', async () => {
     const response = await api
       .post('/api/blogs')
-      .send(test_helper.oneBlogMissingLikes)
+      .send(helper.oneBlogMissingLikes)
     assert.strictEqual(response.body.likes,0)
   })
 
   test('title missing: returning 400 bad request', async () => {
     await api
       .post('/api/blogs')
-      .send(test_helper.oneBlogMissingTitle)
+      .send(helper.oneBlogMissingTitle)
       .expect(400)
   })
 
   test('URL missing: returning 400 bad request', async () => {
     await api
       .post('/api/blogs')
-      .send(test_helper.oneBlogMissingURL)
+      .send(helper.oneBlogMissingURL)
       .expect(400)
   })
 
   test('title and URL missing: returning 400 bad request', async () => {
     await api
       .post('/api/blogs')
-      .send(test_helper.oneBlogMissingURLTitle)
+      .send(helper.oneBlogMissingURLTitle)
       .expect(400)
   })
 })
 
 test('deleting single blog', async () => {
-  const response = await api.get('/api/blogs')
-  const blogList = response.body
+  const blogList = await helper.blogsInDb()
   const blogToBeDeleted = blogList[0]
   await api
     .delete(`/api/blogs/${blogToBeDeleted.id}`)
     .expect(204)
 
-  const responseAfterDelete = await api.get('/api/blogs')
-  const blogListAfterDelete = responseAfterDelete.body
+  const blogListAfterDelete = await helper.blogsInDb()
 
   assert.strictEqual(blogList.length, blogListAfterDelete.length+1)
   assert(!blogListAfterDelete.some(blog => blog.id === blogToBeDeleted.id))
 })
 
 test('blog likes can be updated', async () => {
-  const response = await api.get('/api/blogs')
-  const blogList = response.body
+  const blogList = await helper.blogsInDb()
   const blogToBeUpdated = blogList[0]
   const updatedBlog = {
     ...blogToBeUpdated,
