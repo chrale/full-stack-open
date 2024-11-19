@@ -104,6 +104,40 @@ const oneBlogMissingURLTitle = {
   __v: 0
 }
 
+const user = {
+  username: 'mattim',
+  password: 'salainen',
+  name: 'Matti Meikäläinen',
+}
+
+const userMissingUserName = {
+  password: 'salainen',
+  name: 'admin 2',
+}
+
+const userMissingPassword = {
+  username: 'root',
+  name: 'admin 2',
+}
+
+const userTooShortPassword = {
+  username: 'root',
+  password: 'er',
+  name: 'admin 2',
+}
+
+const userTooShortUserName = {
+  username: 'er',
+  password: 'salainen',
+  name: 'admin 2',
+}
+
+const userNotUniqueName = {
+  username: 'root',
+  password: 'salainen',
+  name: 'admin 2',
+}
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
@@ -117,5 +151,6 @@ const usersInDb = async () => {
 module.exports = {
   emptyList, biggerList, listWithOneBlog, oneBlog, oneBlogMissingLikes,
   oneBlogMissingTitle, oneBlogMissingURL, oneBlogMissingURLTitle,
+  user, userMissingUserName, userMissingPassword, userTooShortPassword, userTooShortUserName, userNotUniqueName,
   blogsInDb, usersInDb
 }

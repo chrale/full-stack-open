@@ -22,15 +22,9 @@ describe('when there is initially one user in db', () => {
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 
-    const newUser = {
-      username: 'mluukkai',
-      password: 'salainen',
-      name: 'Matti Luukkainen',
-    }
-
     await api
       .post('/api/users')
-      .send(newUser)
+      .send(helper.user)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -38,20 +32,15 @@ describe('when there is initially one user in db', () => {
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 
     const usernames = usersAtEnd.map(u => u.username)
-    assert(usernames.includes(newUser.username))
+    assert(usernames.includes(helper.user.username))
   })
 })
 
 describe('incorrect username and password', () => {
   test('username is missing', async () => {
-    const newUserMissingUserName = {
-      password: 'salainen',
-      name: 'admin 2',
-    }
-
     const responseMissingUserName = await api
       .post('/api/users')
-      .send(newUserMissingUserName)
+      .send(helper.userMissingUserName)
       .expect(400)
 
     const errorMessageMissingUserName = responseMissingUserName.body.error
@@ -59,13 +48,9 @@ describe('incorrect username and password', () => {
   })
 
   test('password is missing', async () => {
-    const newUserMissingPassword = {
-      username: 'root',
-      name: 'admin 2',
-    }
     const responseMissingPassword = await api
       .post('/api/users')
-      .send(newUserMissingPassword)
+      .send(helper.userMissingPassword)
       .expect(400)
 
     const errorMessageMissingPassword = responseMissingPassword.body.error
@@ -73,15 +58,9 @@ describe('incorrect username and password', () => {
   })
 
   test('username is not unique', async () => {
-    const newUser = {
-      username: 'root',
-      password: 'salainen',
-      name: 'admin 2',
-    }
-
     const response = await api
       .post('/api/users')
-      .send(newUser)
+      .send(helper.userNotUniqueName)
       .expect(400)
 
     const errorMessage = response.body.error
@@ -89,27 +68,16 @@ describe('incorrect username and password', () => {
   })
 
   test('username is too short', async () => {
-    const newUserTooShortUserName = {
-      username: 'er',
-      password: 'salainen',
-      name: 'admin 2',
-    }
-
     await api
       .post('/api/users')
-      .send(newUserTooShortUserName)
+      .send(helper.userTooShortUserName)
       .expect(400)
   })
 
   test('password is too short', async () => {
-    const newUserTooShortPassword = {
-      username: 'root',
-      password: 'er',
-      name: 'admin 2',
-    }
     const responseTooShortPassword = await api
       .post('/api/users')
-      .send(newUserTooShortPassword)
+      .send(helper.userTooShortPassword)
       .expect(400)
 
     const errorMessageTooShortPassword = responseTooShortPassword.body.error
