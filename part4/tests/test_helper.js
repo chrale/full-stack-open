@@ -110,6 +110,12 @@ const user = {
   name: 'Matti Meikäläinen',
 }
 
+const secondUser = {
+  username: 'maijam',
+  password: 'salainen',
+  name: 'Maija Meikäläinen',
+}
+
 const userMissingUserName = {
   password: 'salainen',
   name: 'admin 2',
@@ -151,6 +157,6 @@ const usersInDb = async () => {
 module.exports = {
   emptyList, biggerList, listWithOneBlog, oneBlog, oneBlogMissingLikes,
   oneBlogMissingTitle, oneBlogMissingURL, oneBlogMissingURLTitle,
-  user, userMissingUserName, userMissingPassword, userTooShortPassword, userTooShortUserName, userNotUniqueName,
+  user, secondUser, userMissingUserName, userMissingPassword, userTooShortPassword, userTooShortUserName, userNotUniqueName,
   blogsInDb, usersInDb
 }

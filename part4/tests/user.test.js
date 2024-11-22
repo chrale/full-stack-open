@@ -34,9 +34,7 @@ describe('when there is initially one user in db', () => {
     const usernames = usersAtEnd.map(u => u.username)
     assert(usernames.includes(helper.user.username))
   })
-})
 
-describe('incorrect username and password', () => {
   test('username is missing', async () => {
     const responseMissingUserName = await api
       .post('/api/users')

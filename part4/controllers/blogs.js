@@ -11,7 +11,7 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', middleware.tokenExtractor, middleware.userExtractor, async (request, response) => {
   const body = request.body
   if (!body.title || !body.url) {
-    response.status(400).end()
+    return response.status(400).end()
   }
 
   const user = await User.findById(request.user)
