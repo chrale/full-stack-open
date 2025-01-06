@@ -15,7 +15,9 @@ const App = () => {
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService
+      .getAll()
+      .then(blogs =>
       setBlogs(blogs)
     )  
   }, [])
@@ -61,14 +63,8 @@ const App = () => {
 
   const handleCreateNew = async (event) => {
     event.preventDefault()
-    console.log('handle create new')
     try {
-      console.log('BLOGS')
-      blogs.forEach(blog => {
-        console.log('Blog:', blog);
-      });
       const blog = await blogService.createNew({title, author, url})
-      console.log('new blog', blog)
       setBlogs((prevBlogs) => [...prevBlogs, blog])
       setTitle('')
       setUrl('')
