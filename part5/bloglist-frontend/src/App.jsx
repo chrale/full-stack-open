@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -10,9 +13,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [author, setAuthor] = useState('')
-  const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService
@@ -61,23 +62,17 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreateNew = async (event) => {
-    event.preventDefault()
+  const addBlog = async (blogObject) => {
     try {
-      const blog = await blogService.createNew({title, author, url})
+      blogFormRef.current.toggleVisibility()
+      const blog = await blogService.createNew(blogObject)
       setBlogs((prevBlogs) => [...prevBlogs, blog])
-      setTitle('')
-      setUrl('')
-      setAuthor('')
-      setNotification({ message: `a new blog ${title} by ${author} added`, error: false })
+      setNotification({ message: `a new blog ${blogObject.title} by ${blogObject.author} added`, error: false })
       setTimeout(() => {
         setNotification(null)
       }, 5000)
     }
     catch (exception) {
-      setTitle('')
-      setUrl('')
-      setAuthor('')
       setNotification({ message: 'adding new post failed', error: true })
       setTimeout(() => {
         setNotification(null)
@@ -90,27 +85,13 @@ const App = () => {
       <div>
         <h2>Log in to application</h2>
         <Notification notification={notification}/>
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input 
-              type="text"
-              name="Username"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input 
-              type="password"
-              name="Password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
+        <LoginForm
+          username = {username}
+          password = {password}
+          handleUsernameChange = {({ target }) => setUsername(target.value)}
+          handlePasswordChange = {({ target }) => setPassword(target.value)}
+          handleLogin = {handleLogin}
+        />
       </div>
     )
   }
@@ -124,34 +105,11 @@ const App = () => {
             <button type="submit">logout</button>
           </p>
         </form>      
-      <h2>create new</h2>
-        <form onSubmit={handleCreateNew}>
-          <div>
-            title:<input 
-              type="text"
-              name="Title"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </div>
-          <div>
-            author:<input 
-              type="text"
-              name="Author"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </div>
-          <div>
-            url:<input 
-              type="text"
-              name="Url"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </div>
-          <button type="submit">create</button>
-        </form>
+        <Togglable buttonLabel='new blog' ref={blogFormRef}>
+          <BlogForm
+            createBlog = {addBlog}
+          />
+        </Togglable>
       {blogs
         .filter(blog => blog.user.username === user.username)
         .map(blog => <Blog key={blog.id} blog={blog} />)
