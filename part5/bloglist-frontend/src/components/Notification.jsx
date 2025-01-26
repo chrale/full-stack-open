@@ -3,15 +3,15 @@ const ErrorMessage = ({ message }) => {
     <div className="error">
       {message}
     </div>
-  )  
+  )
 }
 
 const SuccessMessage = ({ message }) => {
   return (
     <div className="success">
       {message}
-    </div>  
-  )  
+    </div>
+  )
 }
 
 const Notification = ({ notification }) => {
@@ -22,11 +22,11 @@ const Notification = ({ notification }) => {
   return (
     <>
       {notification.error ?
-        <ErrorMessage message = {notification.message}/> : 
+        <ErrorMessage message = {notification.message}/> :
         <SuccessMessage message = {notification.message} />
       }
-    </>    
+    </>
   )
 }
-  
+
 export default Notification
