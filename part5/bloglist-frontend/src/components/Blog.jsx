@@ -44,26 +44,22 @@ const Blog = ({ blog, addLike, deleteBlog, userId }) => {
 
   if (!blogVisible) {
     return (
-      <div style={blogStyle}>
-        <div>
-          &apos;{blog.title}&apos; by {blog.author}<br/>
-          <button onClick={() => setBlogVisible(true)}>view details</button>
-        </div>
+      <div className='blog' style={blogStyle}>
+        &apos;{blog.title}&apos; by {blog.author}<br/>
+        <button className='viewDetails' onClick={() => setBlogVisible(true)}>view details</button>
       </div>
     )
   } else {
     return (
-      <div style={blogStyle}>
-        <div>
-          Title: {blog.title}<br/>
-          Author: {blog.author}<br/>
-          <button onClick={() => setBlogVisible(false)}>hide details</button><br/>
-          Url: {blog.url}<br/>
-          Likes: {blog.likes}<br/>
-          <button onClick={handleLike}>add like</button><br/>
-          Added by user: {blog.user.name}<br/>
-          {userId===blog.user.id? <button onClick={handleDelete}>remove blog</button> : ''}
-        </div>
+      <div className='blog' style={blogStyle}>
+        Title: {blog.title}<br/>
+        Author: {blog.author}<br/>
+        <button className='hideDetails' onClick={() => setBlogVisible(false)}>hide details</button><br/>
+        Url: {blog.url}<br/>
+        Likes: {blog.likes}<br/>
+        <button className='addLike' onClick={handleLike}>add like</button><br/>
+        Added by user: {blog.user.name}<br/>
+        {userId===blog.user.id? <button onClick={handleDelete}>remove blog</button> : ''}
       </div>
     )
   }
