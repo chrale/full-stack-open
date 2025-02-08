@@ -31,10 +31,8 @@ blogsRouter.post('/', middleware.tokenExtractor, middleware.userExtractor, async
 })
 
 blogsRouter.delete('/:id', middleware.tokenExtractor, middleware.userExtractor, async (request, response) => {
-  console.log('DELETE')
   const id = request.params.id
   const blog = await Blog.findById(id)
-  console.log('blogsrouter delete, request params id ', id)
   // no blog found with the ID
   if (!blog) {
     return response.status(204).end()
@@ -50,10 +48,8 @@ blogsRouter.delete('/:id', middleware.tokenExtractor, middleware.userExtractor, 
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  console.log('PUT2')
   const body = request.body
   const id = request.params.id
-  console.log('blogsrouter put, request params id', id)
   const blog = {
     user: body.user, /* tässä oli aiemmin id: id, miksiköhän? */
     title: body.title,

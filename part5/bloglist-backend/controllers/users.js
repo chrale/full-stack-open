@@ -8,7 +8,6 @@ usersRouter.get('/', async (request, response) => {
 })
 
 usersRouter.post('/', async (request, response) => {
-  console.log('NEW USER')
   const { username, name, password } = request.body
 
   if (!password) {
