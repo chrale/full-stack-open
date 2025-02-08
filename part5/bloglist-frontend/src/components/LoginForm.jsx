@@ -17,24 +17,26 @@ const LoginForm = ({ login }) => {
   return (
     <form onSubmit={handleLogin}>
       <div>
-        username
+        <label htmlFor="username-input">Username</label>
         <input
           type="text"
           name="Username"
           value={username}
           onChange={event => setUsername(event.target.value)}
+          id="username-input"
         />
       </div>
       <div>
-        password
+        <label htmlFor="password-input">password</label>
         <input
+          id="password-input"
           type="password"
           name="Password"
           value={password}
           onChange={event => setPassword(event.target.value)}
         />
       </div>
-      <button type="submit">login</button>
+      <button className="login" type="submit">login</button>
     </form>
   )
 }

@@ -103,7 +103,7 @@ const App = () => {
       await blogService.deleteBlog(blogObject.id)
       const newBlogs = blogs.filter((oneBlog) => oneBlog.id !== blogObject.id)
       setBlogs(newBlogs)
-      setNotification({ message: `blog ${blogObject.blog.title} deleted succesfully`, error: false })
+      setNotification({ message: `blog ${blogObject.blog.title} deleted successfully`, error: false })
       setTimeout(() => {
         setNotification(null)
       }, 5000)
