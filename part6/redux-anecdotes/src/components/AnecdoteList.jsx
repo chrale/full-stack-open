@@ -2,24 +2,21 @@ import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { vote } from '../reducers/anecdoteReducer'
-import { showNotification, hideNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Anecdote = ({ content, votes, id }) => {
+const Anecdote = ({ anecdote }) => {
   const dispatch = useDispatch()
 
   const handleClick = () => {
-    dispatch(vote(id))
-    dispatch(showNotification(`you voted '${content}'`))
-    setTimeout(()=>{
-      dispatch(hideNotification())
-    }, 5000)
+    dispatch(vote(anecdote))
+    dispatch(setNotification(`you voted '${anecdote.content}'`, 5))
   }
 
   return (
     <div>
-      <div>{content}</div>
+      <div>{anecdote.content}</div>
       <div>
-        has {votes}
+        has {anecdote.votes}
         <button onClick={handleClick}>vote</button>
       </div>
     </div>
@@ -27,9 +24,7 @@ const Anecdote = ({ content, votes, id }) => {
 }
 
 Anecdote.propTypes = {
-  content: PropTypes.string.isRequired,
-  votes: PropTypes.number.isRequired,
-  id: PropTypes.string.isRequired,
+  anecdote: PropTypes.object.isRequired,
 }
 
 const AnecdoteList = () => {
@@ -47,9 +42,7 @@ const AnecdoteList = () => {
         .map(anecdote =>
           <Anecdote 
             key = {anecdote.id}
-            content = {anecdote.content}
-            votes = {anecdote.votes}
-            id = {anecdote.id}    
+            anecdote = {anecdote} 
           />
     )}
     </div>
