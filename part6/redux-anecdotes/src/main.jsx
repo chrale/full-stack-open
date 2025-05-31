@@ -9,5 +9,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </Provider>
 )
-
-// CONSOLE.LOG set timeout doesnt work perfectly (let's see if fixed later)
